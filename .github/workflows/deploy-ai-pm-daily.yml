@@ -1,0 +1,45 @@
+name: Deploy AI PM Daily
+
+# Builds the ai-pm-daily PWA and publishes it to the gh-pages branch,
+# which GitHub Pages serves at https://<owner>.github.io/personal-projects/
+on:
+  push:
+    branches:
+      - main
+      - claude/app-plan-iriz6z
+    paths:
+      - 'ai-pm-daily/**'
+      - '.github/workflows/deploy-ai-pm-daily.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-ai-pm-daily
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ai-pm-daily
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ai-pm-daily/package-lock.json
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ai-pm-daily/dist
