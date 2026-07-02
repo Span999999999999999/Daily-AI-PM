@@ -11,6 +11,10 @@ export default defineConfig(({ command }) => ({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Ship a self-destroying service worker: any device that cached the earlier
+      // broken build gets the old worker unregistered and its caches cleared, so
+      // the app always loads fresh from the network (no stale blank screen).
+      selfDestroying: true,
       includeAssets: ['favicon.svg'],
       manifest: {
         name: 'AI PM Daily',
