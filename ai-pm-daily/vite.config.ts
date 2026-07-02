@@ -2,12 +2,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// GitHub Pages serves a project site under /<repo-name>/, so the production
-// build must use that as its base path. Local dev stays at "/".
-const BASE = '/personal-projects/'
-
+// Use relative asset paths in the production build so the app works no matter
+// what subpath GitHub Pages serves it from (e.g. /<repo-name>/) — renaming the
+// repo won't break it. HashRouter keeps client routing working under any path.
 export default defineConfig(({ command }) => ({
-  base: command === 'build' ? BASE : '/',
+  base: command === 'build' ? './' : '/',
   plugins: [
     react(),
     VitePWA({
@@ -21,8 +20,8 @@ export default defineConfig(({ command }) => ({
         background_color: '#0b0b13',
         display: 'standalone',
         orientation: 'portrait',
-        scope: BASE,
-        start_url: BASE,
+        scope: '.',
+        start_url: '.',
         icons: [
           { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
